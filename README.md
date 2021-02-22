@@ -1,10 +1,10 @@
 # Outlab2
 
-put   put a new key-value pair into the data structure\
-get   return the value for a given key (or null if key not present)\
-floor return the largest key in the data structure that is <= to the given key (or null)\
-ceiling return the smallest key in the data structure that is >= to the given key (or null)\
-show  a method that prints all key-value pairs stored, in order
+put -- put a new key-value pair into the data structure\
+get -- return the value for a given key (or null if key not present)\
+floor -- return the largest key in the data structure that is <= to the given key (or null)\
+ceiling -- return the smallest key in the data structure that is >= to the given key (or null)\
+show -- a method that prints all key-value pairs stored, in order
 
 You should also implement a simple user interface to test the code.  Here is a sample interaction:
 
