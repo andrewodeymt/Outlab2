@@ -1,4 +1,5 @@
 import java.util.Comparator;
+import java.util.Scanner;
 
 import static java.lang.System.out;
 
@@ -12,21 +13,30 @@ public class BinarySearchTree<Key, Value> {
     }
 
     public void add(Key k, Value v) {
-        if (root == null) root = new TreeNode<>(k, v, null, null);
-        else root.add(k, v, comparator);
+        if (root == null) {
+            root = new TreeNode<>(k, v, null, null);
+        } else {
+            root.add(k, v, comparator);
+        }
     }
 
     public void traverse() {
         if (root == null) {
             out.println("Empty tree!");
-        } else root.traverse();
+        } else {
+            root.traverse();
+        }
     }
 
     public Value search(Key key) {
         if (root == null) {
             return null;
         }
-        out.println(root.search(key, comparator));
+        if (root.search(key, comparator) == null) {
+            out.println("not found");
+        } else {
+            out.println(root.search(key, comparator));
+        }
         return root.search(key, comparator);
     }
 
@@ -34,8 +44,11 @@ public class BinarySearchTree<Key, Value> {
         if (root == null) {
             return null;
         }
-        //Currently returning TreeNode Address not value
-        out.println(root.floor(key, root, comparator));
+        if (root.floor(key, root, comparator) == null) {
+            out.println("not found");
+        } else {
+            out.println(root.floor(key, root, comparator));
+        }
         return root.floor(key, root, comparator);
     }
 
@@ -43,13 +56,22 @@ public class BinarySearchTree<Key, Value> {
         if (root == null) {
             return null;
         }
-        out.println(root.ceiling(key, root, comparator));
+        if (root.ceiling(key, root, comparator) == null) {
+            out.println("not found");
+        } else {
+            out.println(root.ceiling(key, root, comparator));
+        }
         return root.ceiling(key, root, comparator);
     }
 
     public TreeNode<Key, Value> remove(Key key) {
         if (root == null) {
             return null;
+        }
+        if (root.remove(key, root, comparator) == null) {
+            out.println("not found");
+        } else {
+            out.println(root.remove(key, root, comparator));
         }
         return root.remove(key, root, comparator);
     }
@@ -67,7 +89,7 @@ public class BinarySearchTree<Key, Value> {
     }
 
     public static void main(String[] args) {
-        /*
+
         boolean done = false;
         BinarySearchTree<Integer, String> tree = new BinarySearchTree<>(new AscendingStringComparator());
         Scanner sc = new Scanner(System.in);
@@ -75,34 +97,39 @@ public class BinarySearchTree<Key, Value> {
 
         while (!done) {
             //Capture the entire line entered uses StringTokenizer to parse input
-            String choice = sc.nextLine();
-            StringTokenizer st = new StringTokenizer(choice, " ");
-            //out.println("Choice: " + choice);
-            String st1 = st.nextToken();
-            String st2 = st.nextToken();
-            String st3 = st.nextToken();
-            Integer num2 = Integer.parseInt(st2);
-            //out.println("String1: " + st1 + " String2: " + st2 + " String3: " + st3 + " Num2: " + num2);
+            String stringLine = sc.nextLine();
+            String[] splitArray = stringLine.trim().split("\\s+");
+            String choice = splitArray[0];
+            int lookupKey = -99;
+            String lookupValue = "";
 
-            switch (st1) {
+            if (splitArray.length == 2) {
+                lookupKey = Integer.parseInt(splitArray[1]);
+            }
+            if (splitArray.length == 3) {
+                lookupKey = Integer.parseInt(splitArray[1]);
+                lookupValue = splitArray[2];
+            }
+
+            switch (choice) {
                 case "p":
-                    tree.add(num2, st3);
+                    tree.add(lookupKey, lookupValue);
                     break;
                 case "g":
-                    tree.search(num2);
+                    tree.search(lookupKey);
                     break;
                 case "f":
-                    tree.floor(num2);
+                    tree.floor(lookupKey);
                     break;
                 case "c":
-                    tree.ceiling(num2);
+                    tree.ceiling(lookupKey);
                     break;
                 case "s":
                     tree.traverse();
                     break;
                 case "r":
-                    tree.remove(num2);
-                    out.println("In-order traverse the tree after removing " + num2);
+                    tree.remove(lookupKey);
+                    out.println("In-order traverse the tree after removing " + lookupKey);
                     tree.traverse();
                     break;
                 case "x":
@@ -115,30 +142,6 @@ public class BinarySearchTree<Key, Value> {
             }
         }
         sc.close();
-        */
-
-        out.println("Create a tree");
-        BinarySearchTree<Integer, String> tree = new BinarySearchTree<Integer, String>(new AscendingStringComparator());
-        tree.add(5, "e");
-        tree.add(8, "h");
-        tree.add(2, "b");
-        tree.add(4, "d");
-        tree.add(7, "g");
-        tree.add(6, "f");
-        tree.add(1, "a");
-        tree.add(9, "i");
-        out.println("In-order traverse the tree");
-        tree.traverse();
-        out.println("The value associated with 5 is " + tree.search(5));
-        tree.remove(1);
-        out.println("In-order traverse the tree after removing 1");
-        tree.traverse();
-        tree.remove(9);
-        out.println("In-order traverse the tree after removing 9");
-        tree.traverse();
-        tree.remove(5);
-        out.println("In-order traverse the tree after removing 5");
-        tree.traverse();
     }
 }
 
@@ -178,21 +181,71 @@ class TreeNode<Key, Value> {
         }
     }
 
-    
+
     public TreeNode<Key, Value> floor(Key key, TreeNode<Key, Value> node, Comparator<Key> comp) {
-        int compResult = comp.compare(key, pair.getKey());
         if (node == null) {
             return null;
-        } else if (compResult == 0) {
-            return node;
-        } else if (compResult > 0) {
-            node.left = floor(key, node.left, comp);
-        } else {
-            node.right = floor(key, node.right, comp);
         }
-        return node;
+
+        int compResult = comp.compare(key, pair.getKey());
+        out.println("Compare Results: " + compResult);
+        out.println("Node: " + node.toString());
+        //out.println("Left Node: " + node.left.toString());
+
+        if (compResult == 0) {
+            return node;
+        } else if (compResult <= 0) {
+            //return floor(key, node.left, comp);
+            int floorValue = (int) floor(key, node.left, comp).pair.getValue();
+            return (floorValue <= (int) pair.getKey()) ? node.left : node;
+        } else if (compResult > 0) {
+            return floor(key, node.right, comp);
+        } else {
+            if (node.left == null) {
+                return node.right;
+            } else if (node.right == null) {
+                return node.left;
+            }
+/*          int floorValue = (int) floor(key, node.right, comp).pair.getValue();
+            return (floorValue <= (int) pair.getKey()) ? node.right : node;
+*/
+            return node;
+        }
     }
 
+    /*
+        // Returns the smallest key in the symbol table greater than or equal to key.
+        public Key ceiling(Key key) {
+            Node node = ceiling(root, key);
+            if (node == null) {
+                return null;
+            }
+
+            return node.key;
+        }
+
+        private Node ceiling(Node node, Key key) {
+            if (node == null) {
+                return null;
+            }
+
+            int compare = key.compareTo(node.key);
+
+            if (compare == 0) {
+                return node;
+            } else if (compare > 0) {
+                return ceiling(node.right, key);
+            } else {
+                Node leftNode = ceiling(node.left, key);
+                if (leftNode != null) {
+                    return leftNode;
+                } else {
+                    return node;
+                }
+            }
+        }
+    */
+    
     public TreeNode<Key, Value> ceiling(Key key, TreeNode<Key, Value> node, Comparator<Key> comp) {
         int compResult = comp.compare(key, pair.getKey());
         if (compResult == 0) {
@@ -254,6 +307,11 @@ class TreeNode<Key, Value> {
             tmp = tmp.right;
         }
         return tmp.pair;
+    }
+
+    @Override
+    public String toString() {
+        return (String) pair.getValue();
     }
 }
 
